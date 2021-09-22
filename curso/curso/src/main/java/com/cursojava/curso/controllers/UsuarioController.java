@@ -3,10 +3,7 @@ package com.cursojava.curso.controllers;
 import com.cursojava.curso.dao.UsuarioDao;
 import com.cursojava.curso.models.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +67,17 @@ public class UsuarioController {
     }
     */
 
-    @RequestMapping("/api/usuarios")
+    //MÉTODO QUE DEVUELVE LISTA DE LA USUARIOS
+    @RequestMapping(value = "api/usuarios", method = RequestMethod.GET)
     public  List<Usuario> getUsuarios(){
         return usuarioDao.getUsuarios();
     }
 
+    //MÉTODO PARA AGREGAR USUARIOS  //@RequestBody : RECIBIMOS UN OBJ DE TIPO USUARIO, YA QUE EL MÉTODO ES POST // DIFIERE DE @REQUESTPARAM YA QUE ESTE ES PARA LOS GET.
+    @RequestMapping(value = "api/usuarios", method = RequestMethod.POST)
+    public  void registrarUsuario(@RequestBody Usuario usuario){
+        usuarioDao.registrar(usuario);
+    }
 
 
     //MODIFICA AL USUARIO
@@ -92,6 +95,8 @@ public class UsuarioController {
     public void eliminar(@PathVariable Long id){
       usuarioDao.eliminar(id);
     }
+
+
     //BUSCAR USUARIO
     @RequestMapping("/usuario4")
     public Usuario buscar(){

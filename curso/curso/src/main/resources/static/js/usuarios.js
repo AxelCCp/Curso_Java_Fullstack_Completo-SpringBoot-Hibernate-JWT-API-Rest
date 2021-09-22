@@ -38,11 +38,12 @@ async function cargarUsuarios(){
 
         //EXTRAEMOS EL BOTÓN ELIMINAR PARA DARLE FUNCIONALIDAD LLAMANDO A ELIMINAR.
         let botonEliminar = '<a href="#" onclick="eliminarUsuario(' +usuario.id+ ')" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash"></i> </a>';
-
+        //SI EL USUARIO.TELEFONO ES NULL, DEVOLVERÁ "-", SINO DEVOLVERÁ EL TELÉFONO.
+        let telefonoTexto = usuario.telefono == null ? '-' : usuario.telefono;
 
         //CORTAMOS EL USUARIO DEL TBODY DEL HTML Y LO PEGAMOS ACÁ, DONDE LO ALMACENAMOS EN LA VARIABLE "USUARIO"
         let usuarioHtml = '<tr><td>'+usuario.id+'</td> <td>' + usuario.nombre + ' ' + usuario.apellido + '</td>'
-        +'<td>' + usuario.email + '</td> <td>' + usuario.telefono + '</td>'
+        +'<td>' + usuario.email + '</td> <td>' + telefonoTexto + '</td>'
         +'<td>' + botonEliminar +'</td> </tr>';
 
         //ALMACENAMOS

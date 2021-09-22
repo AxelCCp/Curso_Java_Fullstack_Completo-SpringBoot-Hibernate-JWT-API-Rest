@@ -26,6 +26,11 @@ public class UsuarioDaoImp implements UsuarioDao {
         entityManager.remove(usuario);
     }
 
+    @Override
+    public void registrar(Usuario usuario) {
+        entityManager.merge(usuario);
+    }
+
     @PersistenceContext // HACE REFERENCIA A ALGÚN CONTEXTO EN LA BASE DE DATOS QUE DEBA UTILIZAR.
     private EntityManager entityManager;
 }
