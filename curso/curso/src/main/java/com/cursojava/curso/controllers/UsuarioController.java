@@ -2,6 +2,8 @@ package com.cursojava.curso.controllers;
 
 import com.cursojava.curso.dao.UsuarioDao;
 import com.cursojava.curso.models.Usuario;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,6 +78,15 @@ public class UsuarioController {
     //MÉTODO PARA AGREGAR USUARIOS  //@RequestBody : RECIBIMOS UN OBJ DE TIPO USUARIO, YA QUE EL MÉTODO ES POST // DIFIERE DE @REQUESTPARAM YA QUE ESTE ES PARA LOS GET.
     @RequestMapping(value = "api/usuarios", method = RequestMethod.POST)
     public  void registrarUsuario(@RequestBody Usuario usuario){
+
+        //MODIFICACIÓN DE CONTRASEÑA CON UN HASH PARA ALMACENAR CONTRASEÑA CIFRADA EN BBDD
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        //CONVERTIMOS LA CONTRASEÑA
+        //hash(n° de cantidad de iteraciones, uso de memoria que se usará, Si es q va a crear varios hilos para que procese más rápido, texto que queremos hashear)
+        String hash = argon2.hash(1,1024,1,usuario.getPassword());
+        //ESTABLECEMOS LA CONTRASEÑA HASHEADA
+        usuario.setPassword(hash);
+
         usuarioDao.registrar(usuario);
     }
 
@@ -90,12 +101,12 @@ public class UsuarioController {
         usuario.setTelefono("278343283");
         return usuario;
     }
+
     //ELIMINA USUARIO
     @RequestMapping(value = "api/usuarios/{id}", method = RequestMethod.DELETE)
     public void eliminar(@PathVariable Long id){
       usuarioDao.eliminar(id);
     }
-
 
     //BUSCAR USUARIO
     @RequestMapping("/usuario4")

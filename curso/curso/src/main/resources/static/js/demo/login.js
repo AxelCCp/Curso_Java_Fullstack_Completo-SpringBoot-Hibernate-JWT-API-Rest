@@ -1,30 +1,20 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
    //on ready
-
 });
 
 //-------------------------------------------------------------------------------------------------------------------
 //AQUÍ VA A IR TODA LA LÓGICA
-async function registrarUsuario(){
+async function iniciarSesion(){
 
       //TRAEMOS LOS DATOS DEL FORMULARIO DE REGISTRO "registrar.html"
       let datos = {};
-      datos.nombre = document.getElementById('txtNombre').value;
-      datos.apellido = document.getElementById('txtApellido').value;
       datos.email = document.getElementById('txtEmail').value;
       datos.password = document.getElementById('txtPassword').value;
 
-      let repetirPassword = document.getElementById('txtRepetirPassword').value;
-
-      if(repetirPassword !=  datos.password){
-        alert("La contraseña que escribiste es diferente");
-        return;
-      }
-
       //INDICA que SE USARÁ JSON
       const request =
-      await fetch('api/usuarios', {
+      await fetch('api/login', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -34,11 +24,16 @@ async function registrarUsuario(){
         body: JSON.stringify(datos)
       });
 
-    alert("La cuenta fue creada con éxito");
-
-    //REDIRECCIONAMOS A ...
-    window.location.href = 'login.html'
+      //EL RESULTADO LO ALMACENAMOS COMO TEXTO EN "respuesta"
+      const respuesta = await request.text();
+      //SI EL MÉTODO DEL CONTROLLER DE AUTENTICACIÓN  DEVOLVIÓ "OK", NOS MANDARÁ A usuarios.html'
+      if(respuesta == 'OK'){
+        window.location.href = 'usuarios.html'
+      }else{
+      alert("Las credenciales son incorrectas");
+      }
 }
 
+//-------------------------------------------------------------------------------------------------------------------
 
 
