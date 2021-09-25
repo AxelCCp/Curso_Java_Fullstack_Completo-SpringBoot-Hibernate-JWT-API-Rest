@@ -24,11 +24,18 @@ async function iniciarSesion(){
         body: JSON.stringify(datos)
       });
 
-      //EL RESULTADO LO ALMACENAMOS COMO TEXTO EN "respuesta"
+      //EL RESULTADO QUE VIENE DESDE EL CONTROLLER EN EL SERVIDOR LO ALMACENAMOS COMO TEXTO EN "respuesta".
       const respuesta = await request.text();
-      //SI EL MÉTODO DEL CONTROLLER DE AUTENTICACIÓN  DEVOLVIÓ "OK", NOS MANDARÁ A usuarios.html'
-      if(respuesta == 'OK'){
+
+      //SI EL MÉTODO DEL CONTROLLER DE AUTENTICACIÓN  NO DEVOLVIÓ "FAIL", NOS MANDARÁ A usuarios.html'
+      if(respuesta != 'FAIL'){
+
+        //GUARDAMOS LA INFORMACIÓN QUE VIENE CON LA RESPUESTA DEL SERVIDOR EN LOCALSTORAGE. ASÍ GUARDAMOS LA INFO EN EL LADO DEL BROWSER.
+        localStorage.token = respuesta;
+        localStorage.email = datos.email;
+
         window.location.href = 'usuarios.html'
+
       }else{
       alert("Las credenciales son incorrectas");
       }

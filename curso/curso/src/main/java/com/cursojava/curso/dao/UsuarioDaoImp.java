@@ -34,7 +34,7 @@ public class UsuarioDaoImp implements UsuarioDao {
     }
 
     @Override
-    public boolean verificarEmailPassword(Usuario usuario) {
+    public Usuario obtenerUsuarioPorCredenciales(Usuario usuario) {
         //CON ESTA QUERY EVITAMOS ATAQUES DE INYECCIÓN SQL
         String query = "FROM Usuario WHERE email = :email";
 
@@ -43,10 +43,8 @@ public class UsuarioDaoImp implements UsuarioDao {
                 .setParameter("email", usuario.getEmail())
                 .getResultList();
 
-
-        //IF, PARA EVITAR EL NULL POINT EXCEPTION POR SI ES QUE NO HAY COINCIDENCIA CON LOS REGISTROS DE LA BBDD.
         if(lista.isEmpty()){
-            return false;
+            return null;
         }
 
         //OBTENEMOS EL HASH DE LA BBDD  // USAMOS EL GET() DE LIST CON INDICE "0", YA QUE DEBE HABER SOLO UN REGISTRO EN LA LISTA. NO DEBE HABER MÁS DE UN REGISTRO CON LAS MISMAS CREDENCIALES.
@@ -55,8 +53,10 @@ public class UsuarioDaoImp implements UsuarioDao {
         //VERIFICAMOS LA CONTRASEÑA , verify(COMPARAMOS UN HASH CON UNA CONTRASEÑA INGRESADA POR EL USUARIO) DEVUELVE TRUE/FALSE.
         Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
         boolean laPasswordEsLaMisma = argon2.verify(passwordHashed, usuario.getPassword());
-        return laPasswordEsLaMisma;
-
+        if(laPasswordEsLaMisma ==  true){
+            return lista.get(0); //CON ESTO EL MÉTODO DEVUELVE EL OBJ USUARIO QUE ESTÁ EN EL ÍNDICE 0.
+        }
+        return null;
 
     }
 
