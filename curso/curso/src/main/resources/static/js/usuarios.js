@@ -6,7 +6,17 @@
 $(document).ready(function() {
     cargarUsuarios();
   $('#usuarios').DataTable();
+  actualizarEmailDelUsuario();
 });
+
+
+//---
+
+function actualizarEmailDelUsuario(){
+    document.getElementById('txt-email-usuario').outerHTML = localStorage.email;
+}
+
+
 
 //-------------------------------------------------------------------------------------------------------------------
 //AQUÍ VA A IR TODA LA LÓGICA
@@ -21,8 +31,10 @@ async function cargarUsuarios(){
     //-------------------------------------------------------------------------------------------------------------------
 
       //INDICA que SE USARÁ JSON
-      const request =
-      await fetch('api/usuarios', {method: 'GET',headers: { 'Accept': 'application/json','Content-Type': 'application/json' }});
+      const request = await fetch('api/usuarios', {
+        method: 'GET',
+        headers: getHeaders()
+      });
 
       //EL RESULTADO LO CONVERTIMOS EN JSON
       const usuarios = await request.json();
@@ -54,6 +66,13 @@ async function cargarUsuarios(){
       document.querySelector('#usuarios tbody').outerHTML = listadoHtml;
 }
 
+function getHeaders(){
+    return {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization' : localStorage.token
+            };
+}
 
 //FUNCIÓN PARA ELIMINAR USUARIO POR EL FRONTEND
 async function eliminarUsuario(id){
@@ -65,10 +84,7 @@ async function eliminarUsuario(id){
     //COPIAMOS DE ARRIBA LA FUNCIÓN FETCH PARA ACCEDER AL SERVIDOR Y LO MODIFICAMOS PARA ELIMINAR.
     const request = await fetch('api/usuarios/' + id, {
         method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
+        headers: getHeaders()
     });
     //PARA ACTUALIZAR LA PÁGINA DESPUÉS DE ELIMINAR AL USUARIO.
     location.reload()

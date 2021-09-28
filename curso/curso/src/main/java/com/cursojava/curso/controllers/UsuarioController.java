@@ -2,6 +2,7 @@ package com.cursojava.curso.controllers;
 
 import com.cursojava.curso.dao.UsuarioDao;
 import com.cursojava.curso.models.Usuario;
+import com.cursojava.curso.utils.JwtUtil;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,9 +72,20 @@ public class UsuarioController {
 
     //MÉTODO QUE DEVUELVE LISTA DE LA USUARIOS
     @RequestMapping(value = "api/usuarios", method = RequestMethod.GET)
-    public  List<Usuario> getUsuarios(){
+    public  List<Usuario> getUsuarios(@RequestHeader(value="Authorization")String token){
+        if(!validarToken(token)){return null;}
         return usuarioDao.getUsuarios();
     }
+
+
+    private boolean validarToken(String token){
+        //EXTRAEMOS EL ID DEL USUARIO DESDE EL TOKEN Y LO ALMACENAMOS
+        String usuarioId = jwtUtil.getKey(token);
+        return usuarioId != null;
+        //if(usuarioId == null){ return new ArrayList<>(); //RETORNA UNA LISTA VACÍA.}
+    }
+
+
 
     //MÉTODO PARA AGREGAR USUARIOS  //@RequestBody : RECIBIMOS UN OBJ DE TIPO USUARIO, YA QUE EL MÉTODO ES POST // DIFIERE DE @REQUESTPARAM YA QUE ESTE ES PARA LOS GET.
     @RequestMapping(value = "api/usuarios", method = RequestMethod.POST)
@@ -104,22 +116,14 @@ public class UsuarioController {
 
     //ELIMINA USUARIO
     @RequestMapping(value = "api/usuarios/{id}", method = RequestMethod.DELETE)
-    public void eliminar(@PathVariable Long id){
-      usuarioDao.eliminar(id);
+    public void eliminar(@RequestHeader(value="Authorization")String token,@PathVariable Long id){
+        if(!validarToken(token)){return;}
+        usuarioDao.eliminar(id);
     }
-
-    //BUSCAR USUARIO
-    @RequestMapping("/usuario4")
-    public Usuario buscar(){
-        Usuario usuario = new Usuario();
-        usuario.setNombre("Majin");
-        usuario.setApellido("Boo");
-        usuario.setEmail("Boo@boo.jp");
-        usuario.setTelefono("278343283");
-        return usuario;
-    }
-
 
     @Autowired
     private UsuarioDao usuarioDao;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 }

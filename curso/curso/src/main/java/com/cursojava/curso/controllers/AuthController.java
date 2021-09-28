@@ -20,14 +20,14 @@ public class AuthController {
         Usuario usuarioLogueado = usuarioDao.obtenerUsuarioPorCredenciales(usuario);
 
         if (usuarioLogueado!=null) {
-            //AL VERIFICAR QUE EL EMAIL Y PASSWORD ESTÁN OK EN EL MÉTODO obtenerUsuarioPorCredenciales,...
+            //AL VERIFICAR QUE EL EMAIL Y PASSWORD ESTÁN OK EN EL MÉTODO "obtener Usuario Por Credenciales",...
             //GENERAMOS EL JWT. create() : RECIBE EL ID DEL USUARIO LOGUEADO. create() RECIBE String, POR LO TANTO SE HACE CASTING DEL getId QUE A SU VEZ RECIBE UN TIPO LONG.
             //ALMACENAMOS EN EL TOKEN.
             String tokenJwt = jwtUtil.create(String.valueOf(usuarioLogueado.getId()),usuarioLogueado.getEmail());
             return tokenJwt;
          }
 
-       else return "FAIL";
+       return "FAIL";
     }
 
     @Autowired
